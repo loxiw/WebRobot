@@ -35,7 +35,7 @@ public class ServletLogin extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException {
         response.setContentType("text/html;charset=UTF-8");
         String nom = request.getParameter("nom");
-        String contrasenya = request.getParameter("contrasenya");
+        String contrasenya = request.getParameter("password");
         String tipus = request.getParameter("tipus");
         gestors.GestorSqlite gestor = new GestorSqlite();
         gestor.setDbName("ruta");
@@ -45,9 +45,9 @@ public class ServletLogin extends HttpServlet {
                 Boolean correcte = gestor.comprobarLogin(nom, contrasenya);
                 gestor.tancarQuery();
                 if (correcte) {
-                    
+                    response.sendRedirect("main.jsp");
                 } else {
-                    
+                    boolean loginIncorrecte = true;
                 }
                 
             } catch (SQLException ex) {
