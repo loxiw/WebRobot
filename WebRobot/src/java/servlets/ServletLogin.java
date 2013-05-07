@@ -48,13 +48,14 @@ public class ServletLogin extends HttpServlet {
                     response.sendRedirect("main.jsp");
                 } else {
                     boolean loginIncorrecte = true;
+                    response.sendRedirect("index.jsp");
                 }
                 
             } catch (SQLException ex) {
                 Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-        } else if (tipus == "registre") {
+        } else if (tipus.equals("registre")) {
             try {
                 gestor.afegirNouUsuari(nom, contrasenya);
             } catch (SQLException ex) {
