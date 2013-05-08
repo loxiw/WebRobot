@@ -2,24 +2,27 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlets;
+package controladors;
 
-import gestors.GestorSqlite;
+import beans.Usuari;
+import models.GestorSqlite;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Adria
  */
-public class ServletLogin extends HttpServlet {
+public class ServletUsuaris extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -32,34 +35,38 @@ public class ServletLogin extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, ClassNotFoundException {
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession sessio = request.getSession();
         String nom = request.getParameter("nom");
         String contrasenya = request.getParameter("password");
+        Usuari usuari = new Usuari(nom, contrasenya);
         String tipus = request.getParameter("tipus");
-        gestors.GestorSqlite gestor = new GestorSqlite();
-        gestor.setDbName("ruta");
+        GestorSqlite gestor = new GestorSqlite("rutaDB");
         
         if (tipus.equals("login")) {
-            try {
-                Boolean correcte = gestor.comprobarLogin(nom, contrasenya);
-                gestor.tancarQuery();
-                if (correcte) {
-                    response.sendRedirect("main.jsp");
-                } else {
-                    boolean loginIncorrecte = true;
-                    response.sendRedirect("index.jsp");
+            Boolean loginCorrecte = gestor.comprobarLogin(usuari);
+            gestor.tancarQuery();
+            if (loginCorrecte) {
+                response.sendRedirect("main.jsp");
+            } else {
+                Boolean errorLogin = gestor.comprobarErrorLogin(usuari);
+                if (errorLogin == true) {
+                    request.setAttribute("passwordIncorrecte", true);
+                } else if (errorLogin == false) {
+                    request.setAttribute("nomIncorrecte", true);
                 }
-                
-            } catch (SQLException ex) {
-                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+                sessio.setAttribute("usuariBean", usuari);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                dispatcher.forward(request, response);
             }
             
         } else if (tipus.equals("registre")) {
             try {
-                gestor.afegirNouUsuari(nom, contrasenya);
+                gestor.afegirNouUsuari(usuari);
             } catch (SQLException ex) {
-                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ServletUsuaris.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Usuari ja existent");
             }
         }
         PrintWriter out = response.getWriter();
@@ -95,7 +102,9 @@ public class ServletLogin extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServletUsuaris.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServletUsuaris.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -114,7 +123,9 @@ public class ServletLogin extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServletUsuaris.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServletUsuaris.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

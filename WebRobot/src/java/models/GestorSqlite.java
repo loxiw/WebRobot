@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gestors;
+package models;
 
 
+import beans.Usuari;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -23,7 +24,7 @@ public class GestorSqlite {
     private Statement statement;
     private String dbName;
 
-    public void setDbName(String dbName) {
+    public GestorSqlite (String dbName) {
         this.dbName = dbName;
     }
     
@@ -33,7 +34,7 @@ public class GestorSqlite {
      * @return DB sol·licitada
      * @throws UnknownHostException 
      */
-    private Connection obrirConnexio (String dbName) throws ClassNotFoundException, SQLException {
+    private Connection obrirConnexio () throws ClassNotFoundException, SQLException {
         String nomDriver = "org.sqlite.JDBC";
         String jdbc = "jdbc:sqlite";
         Class.forName(nomDriver);
@@ -57,7 +58,7 @@ public class GestorSqlite {
      * @throws SQLException 
      */
     public void enviarUpdateQuery (String query) throws ClassNotFoundException, SQLException {
-        connection = obrirConnexio(dbName);
+        connection = obrirConnexio();
         statement = connection.createStatement();
         statement.executeUpdate(query);
         statement.close();
@@ -66,15 +67,14 @@ public class GestorSqlite {
     
     /**
      * Inserta l'usuari que li passem a la BBDD
-     * @param nomUsuari Nom de l'usuari a afegir
-     * @param passwordUsuari Password de l'usuari a afegir
+     * @param usuari Usuari a afegir
      */
-    public void afegirNouUsuari (String nomUsuari, String passwordUsuari) throws ClassNotFoundException, SQLException {
-        connection = obrirConnexio(dbName);
+    public void afegirNouUsuari (Usuari usuari) throws ClassNotFoundException, SQLException {
+        connection = obrirConnexio();
         statement = connection.createStatement();
         String query = "INSERT INTO usuari VALUES('"
-                     + nomUsuari + "', '"
-                     + passwordUsuari + "'"
+                     + usuari.getNom() + "', '"
+                     + usuari.getContrasenya() + "'"
                      + ");";
         statement.executeUpdate(query);
         statement.close();
@@ -90,7 +90,7 @@ public class GestorSqlite {
      * @throws SQLException 
      */
     public ResultSet enviarQuery (String query) throws ClassNotFoundException, SQLException {
-        connection = obrirConnexio(dbName);
+        connection = obrirConnexio();
         statement = connection.createStatement();
         ResultSet result;
         result = statement.executeQuery(query);
@@ -98,20 +98,46 @@ public class GestorSqlite {
     }
     
     /**
-     * Rep un usuari i la seva password per paràmetres i retorna si existeix a la BBDD
+     * Rep un usuari i retorna si existeix a la BBDD
      * @param usuari Usuari a comprobar
-     * @param password Password a comprobar
      * @return True si l'usuari existeix, false si no existeix
      * @throws ClassNotFoundException
      * @throws SQLException 
      */
-    public Boolean comprobarLogin (String usuari, String password) throws ClassNotFoundException, SQLException {
-        connection = obrirConnexio(dbName);
+    public Boolean comprobarLogin (Usuari usuari) throws ClassNotFoundException, SQLException {
+        connection = obrirConnexio();
         statement = connection.createStatement();
         ResultSet result;
         String query = "SELECT COUNT(*) FROM usuari "
-                     + "WHERE(`nom` = 'oriol'"
-                     + "AND `password` = '1234c'"
+                     + "WHERE(`nom` = '"
+                     + usuari.getNom() + "', "
+                     + "AND `password` = '"
+                     + usuari.getContrasenya() + "'"
+                     + ");";
+        result = statement.executeQuery(query);
+        result.next();
+        int rows = result.getInt("COUNT(*)");
+        if (rows == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Comproba si el nom d'usuari existeix a la base de dades per saber si l'error es trova al nom o la contrasenya
+     * @param usuari Usuari a comprobar
+     * @return True si l'error és la contrasenya, false si és el nom
+     * @throws ClassNotFoundException
+     * @throws SQLException 
+     */
+    public Boolean comprobarErrorLogin (Usuari usuari) throws ClassNotFoundException, SQLException {
+        connection = obrirConnexio();
+        statement = connection.createStatement();
+        ResultSet result;
+        String query = "SELECT COUNT(*) FROM usuari "
+                     + "WHERE(`nom` = '"
+                     + usuari.getNom() + "' "
                      + ");";
         result = statement.executeQuery(query);
         result.next();
@@ -139,7 +165,7 @@ public class GestorSqlite {
      * @throws ClassNotFoundException 
      */
     public DatabaseMetaData agafarMetaData () throws SQLException, ClassNotFoundException {
-        connection = obrirConnexio(dbName);
+        connection = obrirConnexio();
         DatabaseMetaData metadata = connection.getMetaData();
         tancarConnexio(connection);
         return metadata;
