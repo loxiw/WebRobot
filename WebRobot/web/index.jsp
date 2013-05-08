@@ -15,7 +15,7 @@
         <h1>Introdueix el teu usuari i contrasenya</h1>
         <form action="../src/java/servlets/ServletLogin.jsp" method="post" name="login">
             Nom:
-            <input type="text" name="nom" size="10"</br>
+            <input type="text" name="nom" size="10"></br>
             Contrassenya:
             <input type="password" name="password" size="10"></br>
             <input type="submit" name="enviar" value="Enviar">   
