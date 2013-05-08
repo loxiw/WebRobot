@@ -2,24 +2,27 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlets;
+package controladors;
 
-import gestors.GestorSqlite;
+import beans.Usuari;
+import models.GestorSqlite;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Adria
  */
-public class ServletLogin extends HttpServlet {
+public class ServletUsuari extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -34,32 +37,40 @@ public class ServletLogin extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession sessio = request.getSession();
         String nom = request.getParameter("nom");
         String contrasenya = request.getParameter("password");
+        Usuari usuari = new Usuari(nom, contrasenya);
         String tipus = request.getParameter("tipus");
-        gestors.GestorSqlite gestor = new GestorSqlite();
-        gestor.setDbName("ruta");
+        GestorSqlite gestor = new GestorSqlite("ruta");
         
         if (tipus.equals("login")) {
             try {
-                Boolean correcte = gestor.comprobarLogin(nom, contrasenya);
+                Boolean correcte = gestor.comprobarLogin(usuari);
                 gestor.tancarQuery();
                 if (correcte) {
                     response.sendRedirect("main.jsp");
                 } else {
-                    boolean loginIncorrecte = true;
-                    response.sendRedirect("index.jsp");
+                    Boolean errorLogin = gestor.comprovarErrorLogin(usuari);
+                    if (errorLogin == true) {
+                        request.setAttribute("passwordIncorrecte", true);
+                    } else if (errorLogin == false) {
+                        request.setAttribute("nomUsuariIncorrecte", true);
+                    }
+                    sessio.setAttribute("usuari", usuari);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                    dispatcher.forward(request, response);
                 }
                 
             } catch (SQLException ex) {
-                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
             }
             
         } else if (tipus.equals("registre")) {
             try {
-                gestor.afegirNouUsuari(nom, contrasenya);
+                gestor.afegirNouUsuari(usuari);
             } catch (SQLException ex) {
-                Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         PrintWriter out = response.getWriter();
@@ -95,7 +106,7 @@ public class ServletLogin extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -114,7 +125,7 @@ public class ServletLogin extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ServletLogin.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
