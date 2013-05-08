@@ -4,7 +4,9 @@
     Author     : Adria
 --%>
 
+<%@page import="beans.Usuari"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:useBean id="usuari" class="beans.Usuari" scope="session"></jsp:useBean>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,14 +15,29 @@
     </head>
     <body>
         <h1>Introdueix el teu usuari i contrasenya</h1>
-        <form action="../src/java/servlets/ServletLogin.jsp" method="post" name="login">
+        <form action="ServletUsuari" method="post">
             Nom:
-            <input type="text" name="nom" size="10"></br>
-            Contrassenya:
-            <input type="password" name="password" size="10"></br>
-            <input type="submit" name="enviar" value="Enviar">   
-            <input type="hidden" value="login">
+            <input type="text" name="nom" value="<%= usuari.getNom() %>">
+            Contrasenya:
+            <input type="password" name="password" value="<%= usuari.getContrasenya() %> "></br>
+            <input type="hidden" name="tipus" value="login">
+            <input type="submit" value="Enviar"> 
         </form>
+            
+        <%
+            if (request.getAttribute("nomUsuariIncorrecte") != null) {
+        %>
+            <!-- CÓDIGO DE "USUARIO INEXISTENTE" -->
+            <div>No existeix cap usuari amb aquest nom</div>
+        <%
+            } else if (request.getAttribute("passwordIncorrecte") != null) {
+        %>
+            <!-- CÓDIGO DE "PASSWORD INCORRECTA" -->
+            <div>La contrasenya introduida es incorrecte</div>
+        <%
+            }
+        %>
+        
         
     </body>
 </html>

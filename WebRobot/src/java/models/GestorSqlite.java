@@ -23,7 +23,7 @@ public class GestorSqlite {
     private Connection connection; 
     private Statement statement;
     private String dbName;
-
+    
     public GestorSqlite(String dbName) {
         this.dbName = dbName;
     }

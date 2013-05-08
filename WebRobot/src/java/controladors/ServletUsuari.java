@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,9 @@ import javax.servlet.http.HttpSession;
  *
  * @author Adria
  */
+
+@WebServlet(name = "ServletUsuari", urlPatterns = {"/ServletUsuari"})
+
 public class ServletUsuari extends HttpServlet {
 
     /**
@@ -42,7 +46,7 @@ public class ServletUsuari extends HttpServlet {
         String contrasenya = request.getParameter("password");
         Usuari usuari = new Usuari(nom, contrasenya);
         String tipus = request.getParameter("tipus");
-        GestorSqlite gestor = new GestorSqlite("ruta");
+        GestorSqlite gestor = new GestorSqlite("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
         
         if (tipus.equals("login")) {
             try {
@@ -60,6 +64,7 @@ public class ServletUsuari extends HttpServlet {
                     sessio.setAttribute("usuari", usuari);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
                     dispatcher.forward(request, response);
+                    response.sendRedirect("index.jsp");
                 }
                 
             } catch (SQLException ex) {
@@ -70,23 +75,11 @@ public class ServletUsuari extends HttpServlet {
             try {
                 gestor.afegirNouUsuari(usuari);
             } catch (SQLException ex) {
-                Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
+                request.setAttribute("usuariExistent", true);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                dispatcher.forward(request, response);
+                response.sendRedirect("index.jsp");
             }
-        }
-        PrintWriter out = response.getWriter();
-        try {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ServletLogin</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ServletLogin at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {            
-            out.close();
         }
     }
 
