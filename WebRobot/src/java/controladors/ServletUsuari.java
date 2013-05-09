@@ -74,6 +74,10 @@ public class ServletUsuari extends HttpServlet {
         } else if (tipus.equals("registre")) {
             try {
                 gestor.afegirNouUsuari(usuari);
+                request.setAttribute("usuariCreat", true);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                dispatcher.forward(request, response);
+                response.sendRedirect("index.jsp");
             } catch (SQLException ex) {
                 request.setAttribute("usuariExistent", true);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");

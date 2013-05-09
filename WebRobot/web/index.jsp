@@ -28,16 +28,21 @@
             if (request.getAttribute("nomUsuariIncorrecte") != null) {
         %>
             <!-- CÓDIGO DE "USUARIO INEXISTENTE" -->
-            <div>No existeix cap usuari amb aquest nom</div>
         <%
             } else if (request.getAttribute("passwordIncorrecte") != null) {
         %>
             <!-- CÓDIGO DE "PASSWORD INCORRECTA" -->
-            <div>La contrasenya introduida es incorrecte</div>
+        <%
+            } else if (request.getAttribute("usuariExistent")!= null) {
+        %>
+        <!-- CÓDIGO DE "USUARI YA EXISTE" -->
+        <% 
+            } else if (request.getAttribute("usuariCreat") != null) {
+        %>
+        <!-- CÓDIGO DE "USUARI CREAT" -->
         <%
             }
         %>
-        
         
     </body>
 </html>
