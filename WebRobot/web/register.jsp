@@ -14,12 +14,13 @@
         <title>Registre</title>
     </head>
     <body>
+    <center><h2>Login</h2></center>
         <div class="container">
             <div class="row">
                 <div class="span4 offset3">    
                     <form class="form-horizontal">
                         <div class="control-group">
-                            <h1>Registre</h1>
+                            
                             <label class="control-label" for="nom">Nom</label>
                             <div class="controls">
                                 <input type="text" id="inputNom" placeholder="nom">
