@@ -4,9 +4,17 @@
         <servlet-name>ServletUsuari</servlet-name>
         <servlet-class>controladors.ServletUsuari</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServletMovimentRobot</servlet-name>
+        <servlet-class>controladors.ServletMovimentRobot</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServletUsuari</servlet-name>
         <url-pattern>/ServletUsuari</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletMovimentRobot</servlet-name>
+        <url-pattern>/ServletMovimentRobot</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
