@@ -13,7 +13,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
         <link rel="stylesheet" type="text/css" href="css/login.css"/>
-        <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+        <script src="bootstrap/js/bootstrap.js"></script>
         <title>Login</title>
     </head>
     <body>
@@ -23,65 +23,49 @@
                 <div class="row">
                     <div class="login-form">
                         <h2>Login</h2>
-                        
-                        <form action="ServletUsuari" method="post" name="login">
-                        <fieldset>    
+                        <fieldset> 
+                            <form action="ServletUsuari" method="post" name="login">
                                 <div class="clearfix">
-                                    <input type="text" placeholder="Usuari">
+                                    <input type="text" name="nom" placeholder="Usuari">
                                 </div>
                                 <div class="clearfix">
-                                    <input type="password" placeholder="Contrasenya">
+                                    <input type="password" name="password" placeholder="Contrasenya">
                                 </div>
-                            <span><button class="btn primary" type="submit">Enviar</button>
-                          </fieldset>
-                        </form>    
-                                
-                        
-<button class="btn primary" onclick="window.location.href='registro.jsp'">Registrar</button></span>
-                        
-                        
-                            
-                            
-                        
-                        
+                                <input type="hidden" name="tipus" value="login"/>
+                                <button class="btn primary" type="submit">Enviar</button>
+                            </form>
+                            <button class="btn primary" onclick="window.location.href='register.jsp'">Registrar-se</button>
+                        </fieldset>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container">  
-            <div class="row">  
-                <div class="span4">  
-                    <div class="alert">
-                        <a class="close" data-dismiss="alert">×</a>
-                        
-  
-
         <%
             if (request.getAttribute("nomUsuariIncorrecte") != null) {
         %>
-        <!-- CÓDIGO DE "USUARIO INEXISTENTE" -->
-        <div class="container">  
-            <div class="row">  
-                <div class="span4">  
-                    <div class="alert">
-                        <a class="close" data-dismiss="alert">×</a>
-                        <strong>Usuari no existeix</strong>
-                        </div>  
-</div>  
-</div>  
-</div>
-          
-                      
-        <%        } else if (request.getAttribute("passwordIncorrecte") != null) {
+        <script>
+            alert("L'usuari introduït no existeix");
+        </script>
+        <%        
+            } else if (request.getAttribute("passwordIncorrecte") != null) {
         %>
-        <!-- CÓDIGO DE "PASSWORD INCORRECTA" -->
-        <%        } else if (request.getAttribute("usuariExistent") != null) {
+        <script>
+            alert("La contrasenya introduida no es correcte");
+        </script>
+        <%        
+            } else if (request.getAttribute("robotOcupat") != null) {
         %>
-        <!-- CÓDIGO DE "USUARI YA EXISTE" -->
-        <%        } else if (request.getAttribute("usuariCreat") != null) {
+        <script>
+            alert("El robot està ocupat en aquests moments");
+        </script>
+        <%        
+            } else if (request.getAttribute("usuariCreat") != null) {
         %>
-        <!-- CÓDIGO DE "USUARI CREAT" -->
-        <%            }
+        <script>
+            alert("Usuari creat");
+        </script>
+        <%
+            }
         %>
         
     </body>

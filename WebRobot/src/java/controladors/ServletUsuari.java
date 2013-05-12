@@ -5,9 +5,7 @@
 package controladors;
 
 import beans.Usuari;
-import models.GestorSqlite;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import models.GestorBBDDSessioRobot;
+import models.GestorBBDDUsuaris;
 
 /**
  *
@@ -39,51 +39,65 @@ public class ServletUsuari extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, ClassNotFoundException {
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession sessio = request.getSession();
         String nom = request.getParameter("nom");
         String contrasenya = request.getParameter("password");
         Usuari usuari = new Usuari(nom, contrasenya);
         String tipus = request.getParameter("tipus");
-        GestorSqlite gestor = new GestorSqlite("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
+        GestorBBDDUsuaris gestorUsuaris = new GestorBBDDUsuaris("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
         
         if (tipus.equals("login")) {
-            try {
-                Boolean correcte = gestor.comprobarLogin(usuari);
-                gestor.tancarQuery();
-                if (correcte) {
+            Boolean loginCorrecte = gestorUsuaris.comprovarLogin(usuari);
+            gestorUsuaris.tancarQuery();
+            if (loginCorrecte) {
+                GestorBBDDSessioRobot gestorSessio = new GestorBBDDSessioRobot("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
+                Boolean robotDisponible = gestorSessio.comprovarDisponibilitat();
+                gestorSessio.tancarQuery();
+                if (robotDisponible) {
+                    gestorSessio.obrirSessio();
                     response.sendRedirect("main.jsp");
                 } else {
-                    Boolean errorLogin = gestor.comprovarErrorLogin(usuari);
-                    if (errorLogin == true) {
-                        request.setAttribute("passwordIncorrecte", true);
-                    } else if (errorLogin == false) {
-                        request.setAttribute("nomUsuariIncorrecte", true);
-                    }
-                    sessio.setAttribute("usuari", usuari);
+                    request.setAttribute("robotOcupat", true);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
                     dispatcher.forward(request, response);
                     response.sendRedirect("index.jsp");
                 }
-                
-            } catch (SQLException ex) {
-                Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
+            } else {
+                Boolean errorLogin = gestorUsuaris.comprovarUsuariExistent(usuari);
+                gestorUsuaris.tancarQuery();
+                if (errorLogin == true) {
+                    request.setAttribute("passwordIncorrecte", true);
+                } else if (errorLogin == false) {
+                    request.setAttribute("nomUsuariIncorrecte", true);
+                }
+                sessio.setAttribute("usuari", usuari);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                dispatcher.forward(request, response);
+                response.sendRedirect("index.jsp");
             }
             
         } else if (tipus.equals("registre")) {
-            try {
-                gestor.afegirNouUsuari(usuari);
+            Boolean nomUsuariExistent = gestorUsuaris.comprovarUsuariExistent(usuari);
+            gestorUsuaris.tancarQuery();
+            if (!nomUsuariExistent) {
+                gestorUsuaris.afegirNouUsuari(usuari);
                 request.setAttribute("usuariCreat", true);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
                 dispatcher.forward(request, response);
                 response.sendRedirect("index.jsp");
-            } catch (SQLException ex) {
+            } else {
                 request.setAttribute("usuariExistent", true);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
                 dispatcher.forward(request, response);
-                response.sendRedirect("index.jsp");
+                response.sendRedirect("register.jsp");
             }
+                
+        } else if (tipus.equals("logout")) {
+            GestorBBDDSessioRobot gestorSessio = new GestorBBDDSessioRobot("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
+            gestorSessio.tancarSessio();
+            response.sendRedirect("index.jsp");
         }
     }
 
@@ -104,6 +118,8 @@ public class ServletUsuari extends HttpServlet {
             processRequest(request, response);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -122,6 +138,8 @@ public class ServletUsuari extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
             Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
