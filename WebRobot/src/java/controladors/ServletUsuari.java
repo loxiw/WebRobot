@@ -42,21 +42,25 @@ public class ServletUsuari extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession sessio = request.getSession();
-        String nom = request.getParameter("nom");
-        String contrasenya = request.getParameter("password");
-        Usuari usuari = new Usuari(nom, contrasenya);
         String tipus = request.getParameter("tipus");
-        GestorBBDDUsuaris gestorUsuaris = new GestorBBDDUsuaris("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
         
         if (tipus.equals("login")) {
+            GestorBBDDUsuaris gestorUsuaris = new GestorBBDDUsuaris("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
+            String nom = request.getParameter("nom");
+            String contrasenya = request.getParameter("password");
+            Usuari usuari = new Usuari(nom, contrasenya);
             Boolean loginCorrecte = gestorUsuaris.comprovarLogin(usuari);
             gestorUsuaris.tancarQuery();
+            
             if (loginCorrecte) {
                 GestorBBDDSessioRobot gestorSessio = new GestorBBDDSessioRobot("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
                 Boolean robotDisponible = gestorSessio.comprovarDisponibilitat();
                 gestorSessio.tancarQuery();
                 if (robotDisponible) {
                     gestorSessio.obrirSessio();
+                    sessio.setAttribute("usuari", usuari);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");
+                    dispatcher.forward(request, response);
                     response.sendRedirect("main.jsp");
                 } else {
                     request.setAttribute("robotOcupat", true);
@@ -72,13 +76,16 @@ public class ServletUsuari extends HttpServlet {
                 } else if (errorLogin == false) {
                     request.setAttribute("nomUsuariIncorrecte", true);
                 }
-                sessio.setAttribute("usuari", usuari);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
                 dispatcher.forward(request, response);
                 response.sendRedirect("index.jsp");
             }
             
         } else if (tipus.equals("registre")) {
+            GestorBBDDUsuaris gestorUsuaris = new GestorBBDDUsuaris("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
+            String nom = request.getParameter("nom");
+            String contrasenya = request.getParameter("password");
+            Usuari usuari = new Usuari(nom, contrasenya);
             Boolean nomUsuariExistent = gestorUsuaris.comprovarUsuariExistent(usuari);
             gestorUsuaris.tancarQuery();
             if (!nomUsuariExistent) {
@@ -142,7 +149,7 @@ public class ServletUsuari extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(ServletUsuari.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+        }
 
     /**
      * Returns a short description of the servlet.

@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:useBean id="usuari" class="beans.Usuari" scope="session"></jsp:useBean>
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,11 +16,10 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Controlador robot</h1>
         <form action="ServletUsuari" method="post">
             <input type="hidden" name="tipus" value="logout"/>
             <button class="btn primary" type="submit">Tancar sessió</button>
         </form>
-        
     </body>
 </html>

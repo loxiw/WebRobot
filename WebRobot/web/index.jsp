@@ -6,7 +6,6 @@
 
 <%@page import="beans.Usuari"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:useBean id="usuari" class="beans.Usuari" scope="session"></jsp:useBean>
 <!DOCTYPE html>
 <html>
     <head>
@@ -24,7 +23,7 @@
                     <div class="login-form">
                         <h2>Login</h2>
                         <fieldset> 
-                            <form action="ServletUsuari" method="post" name="login">
+                            <form action="ServletUsuari" method="post">
                                 <div class="clearfix">
                                     <input type="text" name="nom" placeholder="Usuari">
                                 </div>

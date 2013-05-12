@@ -22,7 +22,7 @@
                     <div class="login-form">
                         <h2>Registrar-se</h2>
                         
-                        <form action="ServletUsuari" method="post" name="login">
+                        <form action="ServletUsuari" method="post">
                         <fieldset>    
                                 <div class="clearfix">
                                     <input type="text" name="nom" placeholder="Usuari">
