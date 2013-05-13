@@ -14,26 +14,9 @@
         <link rel="stylesheet" type="text/css" href="css/login.css"/>
         <script src="bootstrap/js/bootstrap.js"></script>
         <title>Login</title>
-        
     </head>
-    
     <body>
-        <!--cabecera-->
-        <div class="cabecera">
-            <div class="navbar navbar-fixed-top">
-                <div class="navbar-inner">
-                    <div class="container">
-                        <a class="brand" href="#">PROJECTE ROBOT</a>
-                        <ul class="nav">
-                            <li class="active"><a href="#">Home</a></li>
-                            <li><a href="#about">Bio</a></li>
-                            <li><a href="#contact">Contacto</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--parte del login-->
+
         <div class="container">
             <div class="content">
                 <div class="row">
