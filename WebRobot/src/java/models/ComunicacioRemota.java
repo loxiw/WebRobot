@@ -17,19 +17,17 @@ import java.net.UnknownHostException;
  */
 public class ComunicacioRemota {
     private Socket socket;
-    private OutputStream canal;
-    private DataOutputStream dades;
-    private String ordre;
 
     public ComunicacioRemota(String ipString, int port) throws IOException {
-        InetAddress ip = InetAddress.getByName(ipString);
-        this.socket = new Socket(ip, port);
+//        InetAddress ip = InetAddress.getByName(ipString);
+//        this.socket = new Socket(ip, port);
+        this.socket = new Socket(ipString, port);
     }
     
     public void enviarOrdre (String ordre) throws IOException {
     try{
-        canal = socket.getOutputStream();
-        dades = new DataOutputStream(canal);
+        OutputStream canal = socket.getOutputStream();
+        DataOutputStream dades = new DataOutputStream(canal);
         dades.writeUTF(ordre);
         dades.close();
         canal.close();

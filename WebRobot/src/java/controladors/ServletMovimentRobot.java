@@ -32,7 +32,7 @@ public class ServletMovimentRobot extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String accio = request.getParameter("accio");
-        ComunicacioRemota comunicacio = new ComunicacioRemota("192.168.1.1", 19000);
+        ComunicacioRemota comunicacio = new ComunicacioRemota("localhost", 5000);
         
         comunicacio.enviarOrdre(accio);
         
