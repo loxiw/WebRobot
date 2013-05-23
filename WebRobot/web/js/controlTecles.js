@@ -7,10 +7,10 @@ function controladorTeclaApretada (evnt) {
        case 87 : 
            eventType === "keydown" ? enviarOrdre('endavant') : enviarOrdre('parar') ;
            break;
-       case 65 :
+       case 68 :
            eventType === "keydown" ? enviarOrdre('esquerra') : enviarOrdre('parar') ;
            break;
-       case 68 :
+       case 65 :
            eventType === "keydown" ? enviarOrdre('dreta') : enviarOrdre('parar') ;
            break;
        case 83 :   

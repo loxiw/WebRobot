@@ -18,24 +18,33 @@
         <title>Controlador del robot</title>
     </head>
     <body onkeydown="controladorTeclaApretada(event);" onkeyup="controladorTeclaApretada(event);" onbeforeunload="tancarSessio();">
-        <h1>Controlador robot</h1>
         
-        <div>
-            <!--<button class="btn primary" onmousedown="enviarOrdre('endavant');" onmouseup="enviarOrdre('parar');">Endavant</button>-->
-            <img src="imgs/endavant.png" onmousedown="enviarOrdre('endavant');" onmouseup="enviarOrdre('parar');"/>
+        <div class="container">
+            <div class="content">
+                <fieldset>
+                    <h1>Controlador robot</h1>
+
+                    <center>
+                        <div>
+                        <!--<button class="btn primary" onmousedown="enviarOrdre('endavant');" onmouseup="enviarOrdre('parar');">Endavant</button>-->
+                        <img src="imgs/endavant.png" onmousedown="enviarOrdre('endavant');" onmouseup="enviarOrdre('parar');"/>
+                        </div>
+                        <div style="padding-top: 5px;">
+                            <!--<button class="btn primary" onmousedown="enviarOrdre('esquerra');" onmouseup="enviarOrdre('parar');">Esquerra</button>
+                            <button class="btn primary" onmousedown="enviarOrdre('enrere');" onmouseup="enviarOrdre('parar');">Enrere</button>
+                            <button class="btn primary" onmousedown="enviarOrdre('dreta');" onmouseup="enviarOrdre('parar');">Dreta</button>-->
+                            <img src="imgs/esquerra.png" onmousedown="enviarOrdre('esquerra');" onmouseup="enviarOrdre('parar');"/>
+                            <img src="imgs/enrere.png" onmousedown="enviarOrdre('enrere');" onmouseup="enviarOrdre('parar');"/>
+                            <img src="imgs/dreta.png" onmousedown="enviarOrdre('dreta');" onmouseup="enviarOrdre('parar');"/>
+                        </div>
+
+                        <form style="padding-top: 10px" action="ServletUsuari" method="post">
+                            <input type="hidden" name="tipus" value="logout"/>
+                            <button class="btn primary" onclick="enviarOrdre('tancarConnexio');" type="submit">Tancar sessió</button>
+                        </form>
+                    </center>
+                </fieldset>
+            </div>
         </div>
-        <div style="padding-top: 5px;">
-            <!--<button class="btn primary" onmousedown="enviarOrdre('esquerra');" onmouseup="enviarOrdre('parar');">Esquerra</button>
-            <button class="btn primary" onmousedown="enviarOrdre('enrere');" onmouseup="enviarOrdre('parar');">Enrere</button>
-            <button class="btn primary" onmousedown="enviarOrdre('dreta');" onmouseup="enviarOrdre('parar');">Dreta</button>-->
-            <img src="imgs/esquerra.png" onmousedown="enviarOrdre('esquerra');" onmouseup="enviarOrdre('parar');"/>
-            <img src="imgs/enrere.png" onmousedown="enviarOrdre('enrere');" onmouseup="enviarOrdre('parar');"/>
-            <img src="imgs/dreta.png" onmousedown="enviarOrdre('dreta');" onmouseup="enviarOrdre('parar');"/>
-        </div>
-        
-        <form action="ServletUsuari" method="post">
-            <input type="hidden" name="tipus" value="logout"/>
-            <button class="btn primary" onclick="enviarOrdre('tancarConnexio');" type="submit">Tancar sessió</button>
-        </form>
     </body>
 </html>
