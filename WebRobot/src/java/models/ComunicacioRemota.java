@@ -19,8 +19,6 @@ public class ComunicacioRemota {
     private Socket socket;
 
     public ComunicacioRemota(String ipString, int port) throws IOException {
-//        InetAddress ip = InetAddress.getByName(ipString);
-//        this.socket = new Socket(ip, port);
         this.socket = new Socket(ipString, port);
     }
     

@@ -5,7 +5,6 @@
 package controladors;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +28,19 @@ public class ServletMovimentRobot extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException {
         response.setContentType("text/html;charset=UTF-8");
-        String accio = request.getParameter("accio");
-        ComunicacioRemota comunicacio = new ComunicacioRemota("localhost", 5000);
         
-        comunicacio.enviarOrdre(accio);
+        String ordre = request.getParameter("ordre");
+        
+        try {
+        ComunicacioRemota comunicacio = new ComunicacioRemota("192.168.43.17", 5000);
+
+        comunicacio.enviarOrdre(ordre);
+        
+        } catch (IOException ioe) {
+            System.out.println("Controlador del robot no disponible");
+        }
         
     }
 
