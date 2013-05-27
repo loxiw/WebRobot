@@ -5,6 +5,14 @@
 --%>
 
 <%@page import="beans.Usuari"%>
+<jsp:useBean id="usuari" class="beans.Usuari" scope="request"></jsp:useBean>
+<% 
+    if (usuari.getNom() == null && usuari.getContrasenya() == null) { 
+        usuari.setNom("");
+        usuari.setContrasenya("");
+    }
+%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -25,20 +33,25 @@
                         <fieldset> 
                             <form action="ServletUsuari" method="post">
                                 <div class="clearfix">
-                                    <input type="text" name="nom" placeholder="Usuari">
+                                    <input type="text" name="nom" value="<jsp:getProperty name="usuari" property="nom"/>" placeholder="Usuari">
                                 </div>
                                 <div class="clearfix">
-                                    <input type="password" name="password" placeholder="Contrasenya">
+                                    <input type="password" name="password" value="<jsp:getProperty name="usuari" property="contrasenya"/>" placeholder="Contrasenya">
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="control" value="fletxes" checked="true">Fletxes<br>
+                                    <input type="radio" name="control" value="ratoli">Ratolí
                                 </div>
                                 <input type="hidden" name="tipus" value="login"/>
                                 <button class="btn primary" type="submit">Enviar</button>
                             </form>
-                            <button class="btn primary" onclick="window.location.href='register.jsp'">Registrar-se</button>
+                            <button class="btn primary" onclick="window.location.href='register.jsp';">Registrar-se</button>
                         </fieldset>
                     </div>
                 </div>
             </div>
         </div>
+                                
         <%
             if (request.getAttribute("nomUsuariIncorrecte") != null) {
         %>
@@ -66,6 +79,5 @@
         <%
             }
         %>
-        
     </body>
 </html>

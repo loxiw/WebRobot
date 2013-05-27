@@ -1,14 +1,20 @@
 /* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Controlador d'Ajax
  */
 
+/**
+ * Envia una ordre al robot
+ * @param ordre per al robot
+ */
 function enviarOrdre (ordre) {
     request = newRequest();
     request.open("GET", "ServletMovimentRobot?ordre="+ordre);
     request.send();
 }
 
+/**
+ * Tanca la sessió de l'usuari
+ */
 function tancarSessio () {
     request = newRequest();
     request.open("GET", "ServletUsuari?tipus=logout");

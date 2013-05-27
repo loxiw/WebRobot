@@ -5,9 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:useBean id="usuari" class="beans.Usuari" scope="session"></jsp:useBean>
 <!DOCTYPE html>
-<html onload="//enviarOrdre('fletxes');">
+<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>

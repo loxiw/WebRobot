@@ -15,7 +15,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import models.GestorBBDDSessioRobot;
 import models.GestorBBDDUsuaris;
 
@@ -41,7 +40,6 @@ public class ServletUsuari extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession sessio = request.getSession();
         String tipus = request.getParameter("tipus");
         
         if (tipus.equals("login")) {
@@ -51,36 +49,45 @@ public class ServletUsuari extends HttpServlet {
             Usuari usuari = new Usuari(nom, contrasenya);
             Boolean loginCorrecte = gestorUsuaris.comprovarLogin(usuari);
             gestorUsuaris.tancarQuery();
-            
             if (loginCorrecte) {
                 GestorBBDDSessioRobot gestorSessio = new GestorBBDDSessioRobot("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
                 Boolean robotDisponible = gestorSessio.comprovarDisponibilitat();
                 gestorSessio.tancarQuery();
                 if (robotDisponible) {
                     gestorSessio.obrirSessio();
-                    sessio.setAttribute("usuari", usuari);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");
-                    dispatcher.forward(request, response);
-                    response.sendRedirect("main.jsp");
+                    String control = request.getParameter("control");
+                    if (control.equals("fletxes")) {
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("controlFletxes.jsp");
+                        dispatcher.forward(request, response);
+                        response.sendRedirect("controlFletxes.jsp");
+                    } else {
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("controlRatoli.jsp");
+                        dispatcher.forward(request, response);
+                        response.sendRedirect("controlRatoli.jsp");
+                    }
+                    
                 } else {
                     request.setAttribute("robotOcupat", true);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
                     dispatcher.forward(request, response);
                     response.sendRedirect("index.jsp");
                 }
-            } else {
+            } else {             
                 Boolean errorLogin = gestorUsuaris.comprovarUsuariExistent(usuari);
                 gestorUsuaris.tancarQuery();
                 if (errorLogin == true) {
+                    usuari.setContrasenya("");
                     request.setAttribute("passwordIncorrecte", true);
                 } else if (errorLogin == false) {
+                    usuari.setNom("");
+                    usuari.setContrasenya("");
                     request.setAttribute("nomUsuariIncorrecte", true);
                 }
+                request.setAttribute("usuari", usuari);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
                 dispatcher.forward(request, response);
                 response.sendRedirect("index.jsp");
             }
-            
         } else if (tipus.equals("registre")) {
             GestorBBDDUsuaris gestorUsuaris = new GestorBBDDUsuaris("C:/Users/Adria/Documents/GitHub/WebRobot/WebRobot/src/java/robot.sqlite");
             String nom = request.getParameter("nom");
