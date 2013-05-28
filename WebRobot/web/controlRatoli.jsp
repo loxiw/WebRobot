@@ -13,7 +13,7 @@
         <script src="js/controlRatoli.js"></script>
         <script src="js/robotAjax.js"></script>
     </head>
-    <body onload="obtindreResolucio();" onbeforeunload="tancarSessio();" onmousewheel="canviarSentit();" style="height: 97%">
+    <body onload="obtindreResolucio();" onbeforeunload="tancarSessio();" onscroll="canviarSentit();" style="height: 97%">
         <div onmousedown="moure();" onmouseup="parar();" onmousemove="processarGir(event);" style="width: 99%; height: 97%; border-style: solid">
             <form action="#">
                 <label for="x">X: </label><input type="text" id="x">
@@ -26,7 +26,7 @@
         <!--<button class="btn primary" onmousedown="canviarSentit();" type="submit">Canviar de sentit</button>-->
         <form action="ServletUsuari" method="post">
             <input type="hidden" name="tipus" value="logout"/>
-            <button class="btn primary" onmousedown="enviarOrdre('tancarConnexio');" type="submit">Tancar sessió</button>
+            <button class="btn primary" onclick="enviarOrdre('tancarConnexio');" type="submit">Tancar sessió</button>
         </form>
     </body>
 </html>
